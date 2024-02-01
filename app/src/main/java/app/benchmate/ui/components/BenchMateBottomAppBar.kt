@@ -26,13 +26,6 @@ fun BenchMateBottomAppBar(
             IconButton(onClick = { /* doSomething() */ }) {
                 Icon(Icons.Filled.Person, contentDescription = "Team")
             }
-            FloatingActionButton(
-                onClick = { /* do something */ },
-                containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
-                elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
-            ) {
-                Icon(Icons.Filled.Add, "Localized description")
-            }
         },
         floatingActionButton = floatingActionButton
     )

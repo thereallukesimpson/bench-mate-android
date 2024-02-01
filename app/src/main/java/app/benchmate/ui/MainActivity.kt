@@ -1,4 +1,4 @@
-package app.benchmate
+package app.benchmate.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -17,11 +17,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        setContent {
-            BenchMateScaffold {
-
-            }
-        }
+        setContent { BenchMateApp() }
     }
 }
 

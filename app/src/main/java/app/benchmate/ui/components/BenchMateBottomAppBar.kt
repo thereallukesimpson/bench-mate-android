@@ -23,9 +23,9 @@ fun BenchMateBottomAppBar(
             ) {
                 Icon(Icons.Filled.Home, contentDescription = "Bench")
             }
-            IconButton(onClick = { /* doSomething() */ }) {
-                Icon(Icons.Filled.Person, contentDescription = "Team")
-            }
+//            IconButton(onClick = { /* doSomething() */ }) {
+//                Icon(Icons.Filled.Person, contentDescription = "Team")
+//            }
         },
         floatingActionButton = floatingActionButton
     )

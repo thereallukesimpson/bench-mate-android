@@ -15,23 +15,23 @@ import app.benchmate.ui.components.BmAlertDialog
 @Composable
 fun BenchScreen() {
 
-    var openAlertDialog = remember { mutableStateOf(true) }
+    val openAlertDialog = remember { mutableStateOf(false) }
 
     BenchMateScaffold(
         bottomBar = {
             BenchMateBottomAppBar {
                 BenchMateFab(
-                    onClick = { openAlertDialog } // Not working
+                    onClick = { openAlertDialog.value = !openAlertDialog.value }
                 )
             }
         }
     ) {
         if (openAlertDialog.value) {
             BmAlertDialog(
-                onDismissRequest = {},
+                onDismissRequest = { openAlertDialog.value = false },
                 onConfirmation = {},
                 dialogTitle = "Add Player",
-                dialogText = "Is this text needed?",
+                dialogText = "Name",
                 icon = Icons.Filled.Person
             )
         }

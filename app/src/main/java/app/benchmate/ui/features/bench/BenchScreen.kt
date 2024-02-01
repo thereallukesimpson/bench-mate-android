@@ -9,7 +9,7 @@ import androidx.compose.runtime.remember
 import app.benchmate.ui.components.BenchMateBottomAppBar
 import app.benchmate.ui.components.BenchMateFab
 import app.benchmate.ui.components.BenchMateScaffold
-import app.benchmate.ui.components.BmAlertDialog
+import app.benchmate.ui.components.BmAddPlayerDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,7 +27,7 @@ fun BenchScreen() {
         }
     ) {
         if (openAlertDialog.value) {
-            BmAlertDialog(
+            BmAddPlayerDialog(
                 onDismissRequest = { openAlertDialog.value = false },
                 onConfirmation = {},
                 dialogTitle = "Add Player",

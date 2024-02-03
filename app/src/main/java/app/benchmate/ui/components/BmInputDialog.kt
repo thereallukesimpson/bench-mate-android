@@ -33,7 +33,7 @@ import app.benchmate.ui.theme.Typography
 @Composable
 fun BmInputDialog(
     onDismissRequest: () -> Unit,
-    onConfirmation: () -> Unit,
+    onConfirmation: (String) -> Unit,
     dialogTitle: String,
     inputLabel: String,
     icon: ImageVector,
@@ -84,7 +84,7 @@ fun BmInputDialog(
                         Text(text = "Cancel")
                     }
 
-                    TextButton(onClick = onConfirmation) {
+                    TextButton(onClick = { onConfirmation(nameEntered) }) {
                         Text(text = "Confirm")
                     }
                 }

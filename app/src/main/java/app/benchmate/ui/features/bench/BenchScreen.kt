@@ -20,9 +20,6 @@ fun BenchScreen(
     viewModel: BenchViewModel = hiltViewModel()
 ) {
     val openAlertDialog = remember { mutableStateOf(false) }
-    val playerName = remember {
-        mutableStateOf("")
-    }
     val context = LocalContext.current
 
     BenchMateScaffold(
@@ -37,8 +34,8 @@ fun BenchScreen(
         if (openAlertDialog.value) {
             BmInputDialog(
                 onDismissRequest = { openAlertDialog.value = false },
-                onConfirmation = {
-                    viewModel.addPlayerToTeam(playerName.value)
+                onConfirmation = { playerName ->
+                    viewModel.addPlayerToTeam(playerName)
                     Toast.makeText(context, "$playerName added", Toast.LENGTH_LONG).show()
                     openAlertDialog.value = false
                 },

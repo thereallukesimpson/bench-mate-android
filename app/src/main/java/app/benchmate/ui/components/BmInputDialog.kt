@@ -45,7 +45,7 @@ fun BmInputDialog(
     Dialog(onDismissRequest = onDismissRequest) {
         Card {
             Column(
-                modifier = Modifier
+                modifier = modifier
                     .wrapContentSize()
                     .padding(16.dp),
                 verticalArrangement = Arrangement.Center,
@@ -66,7 +66,8 @@ fun BmInputDialog(
                 OutlinedTextField(
                     value = nameEntered,
                     onValueChange = { nameEntered = it },
-                    label = { Text(text = inputLabel) }
+                    label = { Text(text = inputLabel) },
+                    singleLine = true
                 )
             }
         }

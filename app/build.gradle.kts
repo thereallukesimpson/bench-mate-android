@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
     kotlin("kapt")
-//    alias(libs.plugins.kotlinKapt)
     alias(libs.plugins.daggerHiltAndroid)
 }
 
@@ -59,7 +58,6 @@ dependencies {
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.activity.compose)
     implementation(libs.hilt.navigation.compose)
-//    implementation(libs.androidx.lifecycle.viewModelCompose)
     implementation(platform(libs.compose.bom))
     implementation(libs.ui)
     implementation(libs.ui.graphics)

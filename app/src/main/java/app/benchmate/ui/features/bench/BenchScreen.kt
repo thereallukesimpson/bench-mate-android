@@ -1,6 +1,5 @@
 package app.benchmate.ui.features.bench
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -63,7 +62,6 @@ fun BenchScreen(
                 onDismissRequest = { openAlertDialog.value = false },
                 onConfirmation = { playerName ->
                     viewModel.addPlayerToTeam(playerName)
-                    Toast.makeText(context, "$playerName added", Toast.LENGTH_LONG).show()
                     openAlertDialog.value = false
                 },
                 dialogTitle = "Add Player",

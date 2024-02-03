@@ -15,7 +15,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import app.benchmate.ui.components.BenchMateBottomAppBar
@@ -31,7 +30,6 @@ fun BenchScreen(
 ) {
     val team by viewModel.bench.collectAsState()
     val openAlertDialog = remember { mutableStateOf(false) }
-    val context = LocalContext.current
 
     BenchMateScaffold(
         bottomBar = {

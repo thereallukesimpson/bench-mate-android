@@ -12,7 +12,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -23,7 +22,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -38,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import app.benchmate.ui.theme.Typography
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun BmInputDialog(
     onDismissRequest: () -> Unit,
@@ -92,10 +89,16 @@ fun BmInputDialog(
                     value = nameEntered,
                     onValueChange = { nameEntered = it },
                     label = { Text(text = inputLabel) },
+                    isError = !isNameValid(nameEntered),
                     singleLine = true,
                     keyboardOptions = KeyboardOptions.Default.copy(
-                        capitalization = KeyboardCapitalization.Sentences),
-                    keyboardActions = KeyboardActions { onConfirmation(nameEntered) }
+                        capitalization = KeyboardCapitalization.Sentences
+                    ),
+                    keyboardActions = KeyboardActions {
+                        if (isNameValid(nameEntered)) {
+                            onConfirmation(nameEntered)
+                        }
+                    }
                 )
 
                 LaunchedEffect(Unit) {
@@ -111,13 +114,21 @@ fun BmInputDialog(
                         Text(text = "Cancel")
                     }
 
-                    TextButton(onClick = { onConfirmation(nameEntered) }) {
+                    TextButton(onClick = {
+                        if (isNameValid(nameEntered)) {
+                            onConfirmation(nameEntered)
+                        }
+                    }) {
                         Text(text = "Confirm")
                     }
                 }
             }
         }
     }
+}
+
+private fun isNameValid(name: String): Boolean {
+    return name.isNotBlank() // Must contain at least one non-whitespace character
 }
 
 @Preview

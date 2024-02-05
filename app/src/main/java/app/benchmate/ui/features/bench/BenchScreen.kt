@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,8 +40,9 @@ import app.benchmate.ui.theme.Typography
 fun BenchScreen(
     viewModel: BenchViewModel = hiltViewModel()
 ) {
-    val team by viewModel.bench.collectAsState()
+    val team by viewModel.team.collectAsState()
     val openAlertDialog = remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     BenchMateScaffold(
         bottomBar = {
@@ -52,8 +54,8 @@ fun BenchScreen(
         }
     ) {
 
-        when (team.isEmpty()) {
-            true -> {
+        when (val theTeam = team) {
+            is BenchViewModel.ViewState.Empty -> {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -72,7 +74,7 @@ fun BenchScreen(
                         alpha = .6f
                     )
                     Text(
-                        text = "Tap + below to add a player. You can then assign them to the bench.",
+                        text = context.getString(theTeam.message),
                         style = Typography.bodyLarge.copy(
                             color = PurpleGrey40
                         ),
@@ -81,7 +83,7 @@ fun BenchScreen(
                 }
             }
 
-            false -> {
+            is BenchViewModel.ViewState.Team -> {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -91,8 +93,8 @@ fun BenchScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
 
                     ) {
-                    items(team.size) {
-                        BmPlayerItem(firstName = team[it].firstName)
+                    items(theTeam.list.size) {
+                        BmPlayerItem(firstName = theTeam.list[it].firstName)
                     }
                 }
             }

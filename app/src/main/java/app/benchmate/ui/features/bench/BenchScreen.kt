@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,10 +21,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import app.benchmate.ui.components.BenchMateBottomAppBar
@@ -33,6 +31,8 @@ import app.benchmate.ui.components.BenchMateFab
 import app.benchmate.ui.components.BenchMateScaffold
 import app.benchmate.ui.components.BmInputDialog
 import app.benchmate.ui.components.BmPlayerItem
+import app.benchmate.ui.theme.PurpleGrey40
+import app.benchmate.ui.theme.Typography
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,7 +59,7 @@ fun BenchScreen(
                         .fillMaxSize()
                         .statusBarsPadding()
                         .navigationBarsPadding()
-                        .padding(all = 32.dp),
+                        .padding(all = 16.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
 
@@ -68,9 +68,16 @@ fun BenchScreen(
                         modifier = Modifier.padding(16.dp),
                         painter = rememberVectorPainter(image = Icons.Filled.Face),
                         contentDescription = null,
-                        contentScale = ContentScale.Fit
+                        contentScale = ContentScale.Fit,
+                        alpha = .6f
                     )
-                    Text(text = "Tap + below to create a player. You can then add them to the bench.")
+                    Text(
+                        text = "Tap + below to add a player. You can then assign them to the bench.",
+                        style = Typography.bodyLarge.copy(
+                            color = PurpleGrey40
+                        ),
+                        textAlign = TextAlign.Center
+                    )
                 }
             }
 

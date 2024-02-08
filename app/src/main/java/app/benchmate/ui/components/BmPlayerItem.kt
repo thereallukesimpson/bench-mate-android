@@ -67,10 +67,12 @@ fun PlayerStatus(
         AssistChip(
             onClick = { /*TODO*/ },
             label = { Text(text = status.status) },
-            leadingIcon = { Icon(
-                painter = rememberVectorPainter(image =status.getIcon()),
-                contentDescription = null
-            ) }
+            leadingIcon = {
+                Icon(
+                    painter = rememberVectorPainter(image = status.getIcon()),
+                    contentDescription = null
+                )
+            }
         )
     }
 }
@@ -78,6 +80,19 @@ fun PlayerStatus(
 @Preview
 @Composable
 fun BmPlayerItemPreview() {
+    BenchMateTheme {
+        BmPlayerItem(
+            player = BenchViewModel.PlayerDisplay(
+                firstName = "Luke",
+                status = BenchViewModel.PlayerStatus.NONE
+            )
+        )
+    }
+}
+
+@Preview
+@Composable
+fun BmPlayerItemBenchPreview() {
     BenchMateTheme {
         BmPlayerItem(
             player = BenchViewModel.PlayerDisplay(

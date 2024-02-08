@@ -65,7 +65,7 @@ class BenchViewModel @Inject constructor() : ViewModel() {
     }
 
     enum class PlayerStatus(val status: String) {
-        NONE("Add to bench"),
+        NONE("Bench"),
         BENCH("On bench"),
         PLAYING("Playing");
 

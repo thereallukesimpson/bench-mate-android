@@ -1,31 +1,34 @@
 package app.benchmate.ui.components
 
-import androidx.compose.foundation.border
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import app.benchmate.ui.features.bench.BenchViewModel
 import app.benchmate.ui.theme.BenchMateTheme
-import app.benchmate.ui.theme.PurpleGrey80
 import app.benchmate.ui.theme.Typography
 
 @Composable
 fun BmPlayerItem(
     modifier: Modifier = Modifier,
-    firstName: String
+    player: BenchViewModel.PlayerDisplay
 ) {
     Card(
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxWidth(),
+        border = BorderStroke(width = 1.dp, color = player.status.getColour())
     ) {
         Row(
             modifier = modifier
@@ -34,17 +37,17 @@ fun BmPlayerItem(
             Column {
                 Text(
                     modifier = modifier.padding(bottom = 4.dp),
-                    text = firstName,
+                    text = player.firstName,
                     style = Typography.bodyLarge
                 )
 
                 Text(
-                    text = "Benched: 0",
+                    text = "Times on bench: 0",
                     style = Typography.bodySmall
                 )
             }
 
-            PlayerStatus(status = PlayerStatus.BENCH)
+            PlayerStatus(status = player.status)
         }
     }
 }
@@ -52,14 +55,8 @@ fun BmPlayerItem(
 @Composable
 fun PlayerStatus(
     modifier: Modifier = Modifier,
-    status: PlayerStatus = PlayerStatus.NONE
+    status: BenchViewModel.PlayerStatus = BenchViewModel.PlayerStatus.NONE
 ) {
-    val colour = when (status) {
-        PlayerStatus.NONE -> PurpleGrey80
-        PlayerStatus.BENCH -> Color.Yellow
-        PlayerStatus.PLAYING -> Color.Green
-    }
-
     Row(
         modifier = modifier
             .fillMaxWidth(),
@@ -67,25 +64,26 @@ fun PlayerStatus(
         horizontalArrangement = Arrangement.End
 
     ) {
-        Card(
-            modifier = modifier
-                .border(width = 1.dp, color = colour)
-        ) {
-            Text(text = status.status)
-        }
+        AssistChip(
+            onClick = { /*TODO*/ },
+            label = { Text(text = status.status) },
+            leadingIcon = { Icon(
+                painter = rememberVectorPainter(image =status.getIcon()),
+                contentDescription = null
+            ) }
+        )
     }
-}
-
-enum class PlayerStatus(val status: String) {
-    NONE(""),
-    BENCH("Bench"),
-    PLAYING("Playing")
 }
 
 @Preview
 @Composable
 fun BmPlayerItemPreview() {
     BenchMateTheme {
-        BmPlayerItem(firstName = "Luke")
+        BmPlayerItem(
+            player = BenchViewModel.PlayerDisplay(
+                firstName = "Luke",
+                status = BenchViewModel.PlayerStatus.BENCH
+            )
+        )
     }
 }

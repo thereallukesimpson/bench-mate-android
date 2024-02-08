@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import app.benchmate.ui.components.BenchMateBottomAppBar
@@ -32,6 +33,7 @@ import app.benchmate.ui.components.BenchMateFab
 import app.benchmate.ui.components.BenchMateScaffold
 import app.benchmate.ui.components.BmInputDialog
 import app.benchmate.ui.components.BmPlayerItem
+import app.benchmate.ui.theme.BenchMateTheme
 import app.benchmate.ui.theme.PurpleGrey40
 import app.benchmate.ui.theme.Typography
 
@@ -112,5 +114,15 @@ fun BenchScreen(
                 icon = Icons.Filled.Person
             )
         }
+    }
+}
+
+@Preview
+@Composable
+fun BenchScreenPreview() {
+    BenchMateTheme {
+        BenchScreen(
+            viewModel = BenchViewModel()
+        )
     }
 }

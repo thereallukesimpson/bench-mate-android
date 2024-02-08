@@ -42,7 +42,7 @@ fun BmPlayerItem(
                 )
 
                 Text(
-                    text = "Times on bench: 0",
+                    text = "Bench count: ${player.onBench}",
                     style = Typography.bodySmall
                 )
             }

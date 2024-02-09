@@ -28,7 +28,7 @@ fun BmPlayerItem(
     Card(
         modifier = modifier
             .fillMaxWidth(),
-        border = BorderStroke(width = 1.dp, color = player.status.getColour())
+        border = BorderStroke(width = 2.dp, color = player.status.getColour())
     ) {
         Row(
             modifier = modifier

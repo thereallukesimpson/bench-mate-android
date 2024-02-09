@@ -47,7 +47,10 @@ fun BmPlayerItem(
                 )
             }
 
-            PlayerStatus(status = player.status)
+            PlayerStatus(
+                status = player.status,
+                onClick = player.onBenchClicked
+            )
         }
     }
 }
@@ -55,7 +58,8 @@ fun BmPlayerItem(
 @Composable
 fun PlayerStatus(
     modifier: Modifier = Modifier,
-    status: BenchViewModel.PlayerStatus = BenchViewModel.PlayerStatus.NONE
+    status: BenchViewModel.PlayerStatus = BenchViewModel.PlayerStatus.NONE,
+    onClick: () -> Unit
 ) {
     Row(
         modifier = modifier
@@ -65,7 +69,7 @@ fun PlayerStatus(
 
     ) {
         AssistChip(
-            onClick = { /*TODO*/ },
+            onClick = onClick,
             label = { Text(text = status.status) },
             leadingIcon = {
                 Icon(
@@ -84,7 +88,8 @@ fun BmPlayerItemPreview() {
         BmPlayerItem(
             player = BenchViewModel.PlayerDisplay(
                 firstName = "Luke",
-                status = BenchViewModel.PlayerStatus.NONE
+                status = BenchViewModel.PlayerStatus.NONE,
+                onBenchClicked = {}
             )
         )
     }
@@ -97,7 +102,8 @@ fun BmPlayerItemBenchPreview() {
         BmPlayerItem(
             player = BenchViewModel.PlayerDisplay(
                 firstName = "Luke",
-                status = BenchViewModel.PlayerStatus.BENCH
+                status = BenchViewModel.PlayerStatus.BENCH,
+                onBenchClicked = {}
             )
         )
     }

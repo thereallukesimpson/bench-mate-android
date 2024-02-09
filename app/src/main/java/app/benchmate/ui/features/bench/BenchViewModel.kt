@@ -33,22 +33,64 @@ class BenchViewModel @Inject constructor() : ViewModel() {
 
             val newPlayer = PlayerDisplay(
                 firstName = name,
-                status = PlayerStatus.NONE
+                status = PlayerStatus.NONE,
+                onBenchClicked = {
+                    onBenchClicked(
+                        number = 10,
+                        status = PlayerStatus.BENCH
+                    )
+                }
             )
 
             when (_team.value) {
                 is ViewState.Empty -> {
-                    _team.emit(ViewState.Team(
-                        list = listOf(newPlayer)
-                    ))
+                    _team.emit(
+                        ViewState.Team(
+                            list = listOf(newPlayer)
+                        )
+                    )
                 }
 
                 is ViewState.Team -> {
                     val newList = (_team.value as ViewState.Team).list + newPlayer
-                    _team.emit(ViewState.Team(
-                        list = newList
-                    ))
+                    _team.emit(
+                        ViewState.Team(
+                            list = newList
+                        )
+                    )
                 }
+            }
+        }
+    }
+
+    private fun onBenchClicked(number: Int, status: PlayerStatus) {
+        viewModelScope.launch {
+            when (val state = _team.value) {
+                is ViewState.Team -> {
+                    val updatedTeam: List<PlayerDisplay> = state.list.map {
+                        if (it.number == number) {
+                            PlayerDisplay(
+                                firstName = it.firstName,
+                                number = number,
+                                status = status,
+                                onBench = if (status == PlayerStatus.BENCH) {
+                                    it.onBench + 1
+                                } else it.onBench,
+                                onBenchClicked = {
+                                    onBenchClicked(
+                                        number = 10,
+                                        status = if (status == PlayerStatus.BENCH) {
+                                            PlayerStatus.NONE
+                                        } else PlayerStatus.BENCH
+                                    )
+                                }
+                            )
+                        } else it
+                    }
+                    _team.emit(ViewState.Team(list = updatedTeam))
+                }
+
+                else -> {}
             }
         }
     }
@@ -90,6 +132,7 @@ class BenchViewModel @Inject constructor() : ViewModel() {
         val firstName: String,
         val number: Int = 10,
         val status: PlayerStatus = PlayerStatus.NONE,
-        val onBench: Int = 0
+        val onBench: Int = 0,
+        val onBenchClicked: () -> Unit
     )
 }

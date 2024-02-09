@@ -96,7 +96,9 @@ fun BenchScreen(
 
                     ) {
                     items(theTeam.list.size) {
-                        BmPlayerItem(player = theTeam.list[it])
+                        BmPlayerItem(
+                            player = theTeam.list[it]
+                        )
                     }
                 }
             }

@@ -21,7 +21,7 @@ class BenchViewModel @Inject constructor() : ViewModel() {
     private val _team = MutableStateFlow<ViewState>(ViewState.Empty())
     val team = _team
 
-    fun addPlayerToTeam(name: String) {
+    fun addPlayerToTeam(name: String, number: Int) {
         viewModelScope.launch {
             // TODO: Send new player to repository and observe updated list rather than re-creating it here
 //            val newPlayer = Player(
@@ -33,10 +33,11 @@ class BenchViewModel @Inject constructor() : ViewModel() {
 
             val newPlayer = PlayerDisplay(
                 firstName = name,
+                number = number,
                 status = PlayerStatus.NONE,
                 onBenchClicked = {
                     onBenchClicked(
-                        number = 10,
+                        number = number,
                         status = PlayerStatus.BENCH
                     )
                 }
@@ -78,7 +79,7 @@ class BenchViewModel @Inject constructor() : ViewModel() {
                                 } else it.onBench,
                                 onBenchClicked = {
                                     onBenchClicked(
-                                        number = 10,
+                                        number = number,
                                         status = if (status == PlayerStatus.BENCH) {
                                             PlayerStatus.NONE
                                         } else PlayerStatus.BENCH
@@ -130,7 +131,7 @@ class BenchViewModel @Inject constructor() : ViewModel() {
 
     data class PlayerDisplay(
         val firstName: String,
-        val number: Int = 10,
+        val number: Int,
         val status: PlayerStatus = PlayerStatus.NONE,
         val onBench: Int = 0,
         val onBenchClicked: () -> Unit

@@ -88,6 +88,7 @@ fun BmPlayerItemPreview() {
         BmPlayerItem(
             player = BenchViewModel.PlayerDisplay(
                 firstName = "Luke",
+                number = 13,
                 status = BenchViewModel.PlayerStatus.NONE,
                 onBenchClicked = {}
             )
@@ -102,6 +103,7 @@ fun BmPlayerItemBenchPreview() {
         BmPlayerItem(
             player = BenchViewModel.PlayerDisplay(
                 firstName = "Luke",
+                number = 14,
                 status = BenchViewModel.PlayerStatus.BENCH,
                 onBenchClicked = {}
             )

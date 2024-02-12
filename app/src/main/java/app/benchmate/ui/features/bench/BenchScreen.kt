@@ -108,7 +108,7 @@ fun BenchScreen(
             BmInputDialog(
                 onDismissRequest = { openAlertDialog.value = false },
                 onConfirmation = { playerName, playerNumber ->
-                    viewModel.addPlayerToTeam(playerName)
+                    viewModel.addPlayerToTeam(playerName, playerNumber)
                     openAlertDialog.value = false
                 },
                 dialogTitle = "Add Player",

@@ -31,22 +31,29 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import app.benchmate.ui.theme.Typography
+import timber.log.Timber
 
 @Composable
 fun BmInputDialog(
     onDismissRequest: () -> Unit,
-    onConfirmation: (String) -> Unit,
+    onConfirmation: (String, Int) -> Unit,
     dialogTitle: String,
-    inputLabel: String,
+    nameInputLabel: String,
+    numberInputLabel: String,
     icon: ImageVector,
     modifier: Modifier = Modifier
 ) {
 
     var nameEntered by remember {
+        mutableStateOf("")
+    }
+
+    var numberEntered by remember {
         mutableStateOf("")
     }
 
@@ -77,32 +84,59 @@ fun BmInputDialog(
                 val focusRequester = remember { FocusRequester() }
                 val keyboardController = LocalSoftwareKeyboardController.current
 
-                OutlinedTextField(
-                    modifier = Modifier
+                Row(
+                    modifier = modifier
                         .fillMaxWidth()
-                        .focusRequester(focusRequester)
-                        .onFocusChanged {
-                            if (it.isFocused) {
-                                keyboardController?.show()
+                ) {
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .weight(0.7f)
+                            .padding(end = 8.dp)
+                            .focusRequester(focusRequester)
+                            .onFocusChanged {
+                                if (it.isFocused) {
+                                    keyboardController?.show()
+                                }
+                            },
+                        value = nameEntered,
+                        onValueChange = { nameEntered = it },
+                        label = { Text(text = nameInputLabel) },
+                        isError = !isNameValid(nameEntered),
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            capitalization = KeyboardCapitalization.Sentences
+                        ),
+                        keyboardActions = KeyboardActions {
+                            if (isNameValid(nameEntered)) {
+                                onConfirmation(
+                                    nameEntered,
+                                    checkNotNull(numberEntered.convertNumberStringToInt()))
                             }
-                        },
-                    value = nameEntered,
-                    onValueChange = { nameEntered = it },
-                    label = { Text(text = inputLabel) },
-                    isError = !isNameValid(nameEntered),
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        capitalization = KeyboardCapitalization.Sentences
-                    ),
-                    keyboardActions = KeyboardActions {
-                        if (isNameValid(nameEntered)) {
-                            onConfirmation(nameEntered)
                         }
-                    }
-                )
+                    )
 
-                LaunchedEffect(Unit) {
-                    focusRequester.requestFocus()
+                    LaunchedEffect(Unit) {
+                        focusRequester.requestFocus()
+                    }
+
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .weight(0.3f),
+                        value = numberEntered,
+                        onValueChange = { numberEntered = it },
+                        label = { Text(text = numberInputLabel) },
+                        isError = !isNumberValid(numberEntered),
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        keyboardActions = KeyboardActions {
+                            if (isNameValid(nameEntered) && isNumberValid(numberEntered)) {
+                                onConfirmation(
+                                    nameEntered,
+                                    checkNotNull(numberEntered.convertNumberStringToInt())
+                                )
+                            }
+                        }
+                    )
                 }
 
                 Row(
@@ -115,8 +149,11 @@ fun BmInputDialog(
                     }
 
                     TextButton(onClick = {
-                        if (isNameValid(nameEntered)) {
-                            onConfirmation(nameEntered)
+                        if (isNameValid(nameEntered) && isNumberValid(numberEntered)) {
+                            onConfirmation(
+                                nameEntered,
+                                checkNotNull(numberEntered.convertNumberStringToInt())
+                            )
                         }
                     }) {
                         Text(text = "Confirm")
@@ -131,14 +168,36 @@ private fun isNameValid(name: String): Boolean {
     return name.isNotBlank() // Must contain at least one non-whitespace character
 }
 
+private fun String.convertNumberStringToInt(): Int? {
+    return try {
+        this.toInt()
+    } catch (e: Exception) {
+        Timber.e(e, "Failed to convert number to Int")
+        null
+    }
+}
+
+private fun isNumberValid(number: String): Boolean {
+    return when (val numberInt = number.convertNumberStringToInt()) {
+        null -> {
+            false
+        }
+
+        else -> {
+            numberInt in 0..999
+        }
+    }
+}
+
 @Preview
 @Composable
 fun BmAddPlayerDialogPreview() {
     BmInputDialog(
         onDismissRequest = {},
-        onConfirmation = {},
+        onConfirmation = { _, _ -> },
         dialogTitle = "Add player",
-        inputLabel = "Name",
+        nameInputLabel = "Name",
+        numberInputLabel = "No",
         icon = Icons.Filled.Person
     )
 }

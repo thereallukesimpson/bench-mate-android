@@ -107,7 +107,7 @@ fun BmInputDialog(
                             capitalization = KeyboardCapitalization.Sentences
                         ),
                         keyboardActions = KeyboardActions {
-                            if (isNameValid(nameEntered)) {
+                            if (isNameValid(nameEntered) && isNumberValid(numberEntered)) {
                                 onConfirmation(
                                     nameEntered,
                                     checkNotNull(numberEntered.convertNumberStringToInt()))

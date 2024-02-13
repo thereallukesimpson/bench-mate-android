@@ -33,6 +33,7 @@ import app.benchmate.ui.components.BenchMateFab
 import app.benchmate.ui.components.BenchMateScaffold
 import app.benchmate.ui.components.BmInputDialog
 import app.benchmate.ui.components.BmPlayerItem
+import app.benchmate.ui.components.BmTopAppBar
 import app.benchmate.ui.theme.BenchMateTheme
 import app.benchmate.ui.theme.PurpleGrey40
 import app.benchmate.ui.theme.Typography
@@ -47,6 +48,7 @@ fun BenchScreen(
     val context = LocalContext.current
 
     BenchMateScaffold(
+        topAppBar = { BmTopAppBar() },
         bottomBar = {
             BenchMateBottomAppBar {
                 BenchMateFab(

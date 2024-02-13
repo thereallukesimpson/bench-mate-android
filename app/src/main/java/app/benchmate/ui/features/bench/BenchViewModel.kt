@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.benchmate.R
+import app.benchmate.ui.theme.Green600
 import app.benchmate.ui.theme.PurpleGrey80
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -115,8 +116,8 @@ class BenchViewModel @Inject constructor() : ViewModel() {
         fun getColour(): Color {
             return when (this) {
                 NONE -> PurpleGrey80
-                BENCH -> Color.Yellow
-                PLAYING -> Color.Green
+                BENCH -> Green600
+                PLAYING -> Color.Blue
             }
         }
 

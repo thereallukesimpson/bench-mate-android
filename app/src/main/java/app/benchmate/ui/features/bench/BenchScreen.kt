@@ -4,10 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
@@ -56,16 +53,19 @@ fun BenchScreen(
                 )
             }
         }
-    ) {
+    ) { paddingValues ->
 
         when (val theTeam = team) {
             is BenchViewModel.ViewState.Empty -> {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .statusBarsPadding()
-                        .navigationBarsPadding()
-                        .padding(all = 16.dp),
+                        .padding(
+                            top = paddingValues.calculateTopPadding(),
+                            bottom = paddingValues.calculateBottomPadding(),
+                            start = 16.dp,
+                            end = 16.dp
+                        ),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
 
@@ -88,19 +88,29 @@ fun BenchScreen(
             }
 
             is BenchViewModel.ViewState.Team -> {
-                LazyColumn(
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .statusBarsPadding()
-                        .navigationBarsPadding()
-                        .padding(all = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                        .fillMaxSize()
+                        .padding(
+                            top = paddingValues.calculateTopPadding(),
+                            bottom = paddingValues.calculateBottomPadding(),
+                            start = 16.dp,
+                            end = 16.dp
+                        ),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
 
+                ) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(vertical = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
-                    items(theTeam.list.size) {
-                        BmPlayerItem(
-                            player = theTeam.list[it]
-                        )
+                        items(theTeam.list.size) {
+                            BmPlayerItem(
+                                player = theTeam.list[it]
+                            )
+                        }
                     }
                 }
             }

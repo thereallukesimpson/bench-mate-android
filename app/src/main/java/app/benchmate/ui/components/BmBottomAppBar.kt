@@ -8,11 +8,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import app.benchmate.R
 
 @Composable
 fun BenchMateBottomAppBar(
     floatingActionButton: @Composable (() -> Unit)? = null
 ) {
+    val context = LocalContext.current
+
     BottomAppBar(
         actions = {
             IconButton(
@@ -20,7 +24,7 @@ fun BenchMateBottomAppBar(
             ) {
                 Icon(Icons.Filled.Home, contentDescription = "Bench")
             }
-            Text(text = "BenchMate")
+            Text(text = context.getString(R.string.app_name))
 //            IconButton(onClick = { /* doSomething() */ }) {
 //                Icon(Icons.Filled.Person, contentDescription = "Team")
 //            }

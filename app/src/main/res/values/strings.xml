@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BenchMate</string>
+    <string name="app_name">Bench Mate</string>
 
     // Bench screen
     <string name="empty_state_message">Tap + below to add a player. You can then assign them to the bench.</string>

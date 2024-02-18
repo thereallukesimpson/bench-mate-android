@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "BenchMate"
+rootProject.name = "Bench Mate"
 include(":app")

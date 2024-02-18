@@ -1,15 +1,19 @@
 package app.benchmate.ui.components
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.benchmate.ui.features.bench.BenchViewModel
-import app.benchmate.ui.theme.Pink80
 
 @Composable
 fun BmNumberCircle(
@@ -18,26 +22,34 @@ fun BmNumberCircle(
     status: BenchViewModel.PlayerStatus = BenchViewModel.PlayerStatus.NONE
 ) {
 
-    Text(
-        text = number.toString(),
+    Box(
         modifier = modifier
-            .padding(24.dp)
-            .drawBehind {
-                drawCircle(
-                    color = status.getColour(),
-                    radius = 68f
-                )
-            }
-    )
-
+    ) {
+        Text(
+            text = number.toString(),
+            modifier = modifier
+                .width(48.dp)
+                .wrapContentWidth(align = Alignment.CenterHorizontally)
+                .drawBehind {
+                    drawCircle(
+                        color = status.getColour(),
+                        radius = 64f
+                    )
+                }
+        )
+    }
 }
 
 @Preview
 @Composable
 private fun BmNumberCirclePreview() {
-    Column {
+    Column(
+        modifier = Modifier
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(32.dp)
+    ) {
         BmNumberCircle(number = 8)
         BmNumberCircle(number = 56)
-        BmNumberCircle(number = 934)
+        BmNumberCircle(number = 896)
     }
 }

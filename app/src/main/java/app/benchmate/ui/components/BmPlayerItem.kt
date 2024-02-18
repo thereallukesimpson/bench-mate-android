@@ -40,7 +40,12 @@ fun BmPlayerItem(
                 .padding(all = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            BmNumberCircle(number = player.number, status = player.status)
+            BmNumberCircle(
+                modifier = modifier
+                    .padding(end = 8.dp),
+                number = player.number,
+                status = player.status
+            )
 
             Column {
                 Text(

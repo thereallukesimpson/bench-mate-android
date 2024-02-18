@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -111,6 +112,8 @@ fun BmInputDialog(
                                 onConfirmation(
                                     nameEntered,
                                     checkNotNull(numberEntered.convertNumberStringToInt()))
+                            } else {
+                                this.defaultKeyboardAction(ImeAction.Next)
                             }
                         }
                     )

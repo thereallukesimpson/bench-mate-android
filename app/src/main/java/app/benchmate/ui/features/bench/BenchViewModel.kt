@@ -14,6 +14,7 @@ import app.benchmate.ui.theme.PurpleGrey80
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,13 +33,16 @@ class BenchViewModel @Inject constructor() : ViewModel() {
 //                games = emptyList()
 //            )
 
+            val id = UUID.randomUUID().toString()
+
             val newPlayer = PlayerDisplay(
+                id = id,
                 firstName = name,
                 number = number,
                 status = PlayerStatus.NONE,
                 onBenchClicked = {
                     onBenchClicked(
-                        number = number,
+                        playerId = id,
                         status = PlayerStatus.BENCH
                     )
                 }
@@ -65,22 +69,23 @@ class BenchViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    private fun onBenchClicked(number: Int, status: PlayerStatus) {
+    private fun onBenchClicked(playerId: String, status: PlayerStatus) {
         viewModelScope.launch {
             when (val state = _team.value) {
                 is ViewState.Team -> {
                     val updatedTeam: List<PlayerDisplay> = state.list.map {
-                        if (it.number == number) {
+                        if (it.id == playerId) {
                             PlayerDisplay(
+                                id = it.id,
                                 firstName = it.firstName,
-                                number = number,
+                                number = it.number,
                                 status = status,
                                 onBench = if (status == PlayerStatus.BENCH) {
                                     it.onBench + 1
                                 } else it.onBench,
                                 onBenchClicked = {
                                     onBenchClicked(
-                                        number = number,
+                                        playerId = playerId,
                                         status = if (status == PlayerStatus.BENCH) {
                                             PlayerStatus.NONE
                                         } else PlayerStatus.BENCH
@@ -131,6 +136,7 @@ class BenchViewModel @Inject constructor() : ViewModel() {
     }
 
     data class PlayerDisplay(
+        val id: String,
         val firstName: String,
         val number: Int,
         val status: PlayerStatus = PlayerStatus.NONE,

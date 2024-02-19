@@ -100,6 +100,7 @@ fun BmPlayerItemPreview() {
     BenchMateTheme {
         BmPlayerItem(
             player = BenchViewModel.PlayerDisplay(
+                id = "1",
                 firstName = "Luke",
                 number = 13,
                 status = BenchViewModel.PlayerStatus.NONE,
@@ -115,6 +116,7 @@ fun BmPlayerItemBenchPreview() {
     BenchMateTheme {
         BmPlayerItem(
             player = BenchViewModel.PlayerDisplay(
+                id = "2",
                 firstName = "Luke",
                 number = 14,
                 status = BenchViewModel.PlayerStatus.BENCH,

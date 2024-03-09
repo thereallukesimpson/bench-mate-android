@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.benchmate.R
+import app.benchmate.repositories.player.PlayerRepository
 import app.benchmate.ui.theme.Green600
 import app.benchmate.ui.theme.PurpleGrey80
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,10 +19,35 @@ import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
-class BenchViewModel @Inject constructor() : ViewModel() {
+class BenchViewModel @Inject constructor(
+    private val playerRepository: PlayerRepository
+) : ViewModel() {
 
     private val _team = MutableStateFlow<ViewState>(ViewState.Empty())
     val team = _team
+
+    fun getPlayers() {
+        viewModelScope.launch {
+            val playersDisplay = playerRepository.getAllPlayers().map {
+                PlayerDisplay(
+                    id = it.playerId,
+                    firstName = it.firstName,
+                    number = it.number,
+                    status = it.playerStatus?.toDisplay() ?: PlayerStatus.NONE,
+                    onBench = it.onBenchCount ?: 0,
+                    onBenchClicked = {
+                        onBenchClicked(
+                            playerId = it.playerId,
+                            status = if (it.playerStatus?.toDisplay() == PlayerStatus.BENCH) {
+                                PlayerStatus.NONE
+                            } else PlayerStatus.BENCH
+                        )
+                    }
+                )
+            }
+            _team.emit(ViewState.Team(list = playersDisplay))
+        }
+    }
 
     fun addPlayerToTeam(name: String, number: Int) {
         viewModelScope.launch {
@@ -132,6 +158,13 @@ class BenchViewModel @Inject constructor() : ViewModel() {
                 BENCH -> Icons.Filled.Person
                 PLAYING -> Icons.Filled.Check
             }
+        }
+    }
+
+    private fun app.benchmate.repositories.models.PlayerStatus.toDisplay(): PlayerStatus {
+        return when (this) {
+            app.benchmate.repositories.models.PlayerStatus.NONE -> PlayerStatus.NONE
+            app.benchmate.repositories.models.PlayerStatus.BENCH -> PlayerStatus.BENCH
         }
     }
 

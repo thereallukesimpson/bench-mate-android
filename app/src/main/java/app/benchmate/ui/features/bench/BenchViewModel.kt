@@ -9,7 +9,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.benchmate.R
+import app.benchmate.repositories.db.DatabaseDriverFactory
 import app.benchmate.repositories.player.PlayerRepository
+import app.benchmate.repositories.player.RealPlayerRepository
 import app.benchmate.ui.theme.Green600
 import app.benchmate.ui.theme.PurpleGrey80
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,9 +21,12 @@ import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
-class BenchViewModel @Inject constructor(
+class BenchViewModel @Inject constructor() : ViewModel() {
+
     private val playerRepository: PlayerRepository
-) : ViewModel() {
+        get() {
+            return RealPlayerRepository(DatabaseDriverFactory()) // Using JVM implementation instead of androidMain (kotlin)
+        }
 
     private val _team = MutableStateFlow<ViewState>(ViewState.Empty())
     val team = _team

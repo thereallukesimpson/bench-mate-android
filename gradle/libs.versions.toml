@@ -10,7 +10,7 @@ activity-compose = "1.8.2"
 hilt-android = "2.48.1"
 hilt-navigation-compose = "1.1.0"
 compose-bom = "2024.01.00"
-benchmate-repositories = "0.0.4"
+benchmate-repositories = "0.0.5"
 timber = "5.0.1"
 
 [libraries]

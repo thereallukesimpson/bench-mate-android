@@ -1,37 +1,39 @@
 package app.benchmate.ui.features.bench
 
+import android.app.Application
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import app.benchmate.R
 import app.benchmate.repositories.db.DatabaseDriverFactory
-import app.benchmate.repositories.player.PlayerRepository
+import app.benchmate.repositories.models.PlayerStatus
 import app.benchmate.repositories.player.RealPlayerRepository
 import app.benchmate.ui.theme.Green600
 import app.benchmate.ui.theme.PurpleGrey80
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
-class BenchViewModel @Inject constructor() : ViewModel() {
+class BenchViewModel @Inject constructor(application: Application) : AndroidViewModel(application = application) {
 
-    private val playerRepository: PlayerRepository
-        get() {
-            return RealPlayerRepository(DatabaseDriverFactory()) // Using JVM implementation instead of androidMain (kotlin)
-        }
+    private val playerRepository = RealPlayerRepository(DatabaseDriverFactory(application.applicationContext))
 
     private val _team = MutableStateFlow<ViewState>(ViewState.Empty())
-    val team = _team
 
-    fun getPlayers() {
+    val team = _team.also {
+        getPlayers()
+    }
+
+    private fun getPlayers() {
         viewModelScope.launch {
             val playersDisplay = playerRepository.getAllPlayers().map {
                 PlayerDisplay(
@@ -50,53 +52,30 @@ class BenchViewModel @Inject constructor() : ViewModel() {
                     }
                 )
             }
-            _team.emit(ViewState.Team(list = playersDisplay))
+            if (playersDisplay.isNotEmpty()) {
+                _team.emit(ViewState.Team(list = playersDisplay))
+            } else {
+                _team.emit(ViewState.Empty())
+            }
         }
     }
 
     fun addPlayerToTeam(name: String, number: Int) {
         viewModelScope.launch {
-            // TODO: Send new player to repository and observe updated list rather than re-creating it here
-//            val newPlayer = Player(
-//                playerId = UUID.randomUUID().toString(),
-//                firstName = name,
-//                lastName = "",
-//                games = emptyList()
-//            )
 
+            // TODO move UUID to repository
             val id = UUID.randomUUID().toString()
+            Timber.d("UUID = $id")
 
-            val newPlayer = PlayerDisplay(
-                id = id,
+            playerRepository.addPlayer(
+                playerId = id,
                 firstName = name,
                 number = number,
-                status = PlayerStatus.NONE,
-                onBenchClicked = {
-                    onBenchClicked(
-                        playerId = id,
-                        status = PlayerStatus.BENCH
-                    )
-                }
+                playerStatus = PlayerStatus.NONE.toDomain(),
+                onBenchCount = 0
             )
 
-            when (_team.value) {
-                is ViewState.Empty -> {
-                    _team.emit(
-                        ViewState.Team(
-                            list = listOf(newPlayer)
-                        )
-                    )
-                }
-
-                is ViewState.Team -> {
-                    val newList = (_team.value as ViewState.Team).list + newPlayer
-                    _team.emit(
-                        ViewState.Team(
-                            list = newList
-                        )
-                    )
-                }
-            }
+            getPlayers()
         }
     }
 
@@ -170,6 +149,14 @@ class BenchViewModel @Inject constructor() : ViewModel() {
         return when (this) {
             app.benchmate.repositories.models.PlayerStatus.NONE -> PlayerStatus.NONE
             app.benchmate.repositories.models.PlayerStatus.BENCH -> PlayerStatus.BENCH
+        }
+    }
+
+    private fun PlayerStatus.toDomain(): app.benchmate.repositories.models.PlayerStatus {
+        return when (this) {
+            PlayerStatus.NONE -> app.benchmate.repositories.models.PlayerStatus.NONE
+            PlayerStatus.BENCH -> app.benchmate.repositories.models.PlayerStatus.BENCH
+            else -> app.benchmate.repositories.models.PlayerStatus.NONE
         }
     }
 

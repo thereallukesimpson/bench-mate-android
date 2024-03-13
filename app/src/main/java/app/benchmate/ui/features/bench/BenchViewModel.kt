@@ -11,7 +11,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import app.benchmate.R
 import app.benchmate.repositories.db.DatabaseDriverFactory
-import app.benchmate.repositories.models.PlayerStatus
 import app.benchmate.repositories.player.RealPlayerRepository
 import app.benchmate.ui.theme.Green600
 import app.benchmate.ui.theme.PurpleGrey80
@@ -36,18 +35,22 @@ class BenchViewModel @Inject constructor(application: Application) : AndroidView
     private fun getPlayers() {
         viewModelScope.launch {
             val playersDisplay = playerRepository.getAllPlayers().map {
+                val onBenchCount =  it.onBenchCount ?: 0
                 PlayerDisplay(
                     id = it.playerId,
                     firstName = it.firstName,
                     number = it.number,
                     status = it.playerStatus?.toDisplay() ?: PlayerStatus.NONE,
-                    onBench = it.onBenchCount ?: 0,
+                    onBench = onBenchCount,
                     onBenchClicked = {
                         onBenchClicked(
                             playerId = it.playerId,
                             status = if (it.playerStatus?.toDisplay() == PlayerStatus.BENCH) {
                                 PlayerStatus.NONE
-                            } else PlayerStatus.BENCH
+                            } else PlayerStatus.BENCH,
+                            onBenchCount = if (it.playerStatus?.toDisplay() == PlayerStatus.NONE) {
+                                onBenchCount + 1
+                            } else { onBenchCount }
                         )
                     }
                 )
@@ -79,36 +82,10 @@ class BenchViewModel @Inject constructor(application: Application) : AndroidView
         }
     }
 
-    private fun onBenchClicked(playerId: String, status: PlayerStatus) {
+    private fun onBenchClicked(playerId: String, status: PlayerStatus, onBenchCount: Int) {
         viewModelScope.launch {
-            when (val state = _team.value) {
-                is ViewState.Team -> {
-                    val updatedTeam: List<PlayerDisplay> = state.list.map {
-                        if (it.id == playerId) {
-                            PlayerDisplay(
-                                id = it.id,
-                                firstName = it.firstName,
-                                number = it.number,
-                                status = status,
-                                onBench = if (status == PlayerStatus.BENCH) {
-                                    it.onBench + 1
-                                } else it.onBench,
-                                onBenchClicked = {
-                                    onBenchClicked(
-                                        playerId = playerId,
-                                        status = if (status == PlayerStatus.BENCH) {
-                                            PlayerStatus.NONE
-                                        } else PlayerStatus.BENCH
-                                    )
-                                }
-                            )
-                        } else it
-                    }
-                    _team.emit(ViewState.Team(list = updatedTeam))
-                }
-
-                else -> {}
-            }
+            playerRepository.updatePlayerStatus(playerId, status.toDomain(), onBenchCount = onBenchCount)
+            getPlayers()
         }
     }
 

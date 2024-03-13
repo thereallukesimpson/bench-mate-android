@@ -44,7 +44,11 @@ fun BenchScreen(
     val context = LocalContext.current
 
     BenchMateScaffold(
-        topAppBar = { BmTopAppBar() },
+        topAppBar = {
+            BmTopAppBar(
+                onClearBench = { viewModel.clearBench() }
+            )
+        },
         bottomBar = {
             BenchMateBottomAppBar {
                 BenchMateFab(

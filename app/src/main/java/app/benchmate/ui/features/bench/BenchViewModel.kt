@@ -82,6 +82,13 @@ class BenchViewModel @Inject constructor(application: Application) : AndroidView
         }
     }
 
+    fun clearBench() {
+        viewModelScope.launch {
+            playerRepository.clearBenchCountAndPlayerStatus()
+            getPlayers()
+        }
+    }
+
     private fun onBenchClicked(playerId: String, status: PlayerStatus, onBenchCount: Int) {
         viewModelScope.launch {
             playerRepository.updatePlayerStatus(playerId, status.toDomain(), onBenchCount = onBenchCount)

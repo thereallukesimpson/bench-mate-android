@@ -32,6 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import app.benchmate.ui.components.BenchMateBottomAppBar
 import app.benchmate.ui.components.BenchMateFab
 import app.benchmate.ui.components.BenchMateScaffold
+import app.benchmate.ui.components.BmAlertDialog
 import app.benchmate.ui.components.BmInputDialog
 import app.benchmate.ui.components.BmPlayerItem
 import app.benchmate.ui.components.BmTopAppBar
@@ -44,7 +45,8 @@ fun BenchScreen(
     viewModel: BenchViewModel = hiltViewModel()
 ) {
     val team by viewModel.team.collectAsState()
-    val openAlertDialog = remember { mutableStateOf(false) }
+    val openPlayerInputDialog = remember { mutableStateOf(false) }
+    val openClearBenchDialog = remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     BenchMateScaffold(
@@ -52,7 +54,7 @@ fun BenchScreen(
             BmTopAppBar(
                 title = "My Team",
                 actions = {
-                    IconButton(onClick = { viewModel.clearBench() }) {
+                    IconButton(onClick = { openClearBenchDialog.value = !openClearBenchDialog.value }) {
                         Icon(
                             Icons.Default.Delete,
                             contentDescription = "Reset bench",
@@ -65,7 +67,7 @@ fun BenchScreen(
         bottomBar = {
             BenchMateBottomAppBar {
                 BenchMateFab(
-                    onClick = { openAlertDialog.value = !openAlertDialog.value }
+                    onClick = { openPlayerInputDialog.value = !openPlayerInputDialog.value }
                 )
             }
         }
@@ -131,17 +133,31 @@ fun BenchScreen(
             }
         }
 
-        if (openAlertDialog.value) {
+        if (openPlayerInputDialog.value) {
             BmInputDialog(
-                onDismissRequest = { openAlertDialog.value = false },
+                onDismissRequest = { openPlayerInputDialog.value = false },
                 onConfirmation = { playerName, playerNumber ->
                     viewModel.addPlayerToTeam(playerName, playerNumber)
-                    openAlertDialog.value = false
+                    openPlayerInputDialog.value = false
                 },
                 dialogTitle = "Add Player",
                 nameInputLabel = "Name",
                 numberInputLabel = "No",
                 icon = Icons.Filled.Person
+            )
+        }
+        
+        if (openClearBenchDialog.value) {
+            BmAlertDialog(
+                icon = Icons.Default.Delete,
+                title = "Clear Bench",
+                text = "Are you sure you want to clear the bench count? This would usually be done at the end of a game. This will not clear the players.",
+                onConfirmClick = {
+                    viewModel.clearBench()
+                    openClearBenchDialog.value = false
+                },
+                onDismissClick = { openClearBenchDialog.value = false },
+                onDismissRequest = { openClearBenchDialog.value = false }
             )
         }
     }

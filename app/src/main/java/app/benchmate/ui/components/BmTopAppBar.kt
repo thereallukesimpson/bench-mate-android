@@ -1,5 +1,6 @@
 package app.benchmate.ui.components
 
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -17,7 +18,8 @@ import app.benchmate.ui.theme.BenchMateTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BmTopAppBar(
-    onClearBench: () -> Unit,
+    title: String,
+    actions: @Composable RowScope.() -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
@@ -26,12 +28,8 @@ fun BmTopAppBar(
             containerColor = MaterialTheme.colorScheme.primary,
             titleContentColor = MaterialTheme.colorScheme.onPrimary,
         ),
-        title = { Text(text = "My Team") },
-        actions = {
-            IconButton(onClick = onClearBench) {
-                Icon(Icons.Default.Delete, contentDescription = "Reset bench", tint = MaterialTheme.colorScheme.onPrimary)
-            }
-        }
+        title = { Text(text = title) },
+        actions = actions
     )
 }
 
@@ -40,7 +38,16 @@ fun BmTopAppBar(
 fun BmTopAppBarPreview() {
     BenchMateTheme {
         BmTopAppBar(
-            onClearBench = {}
+            title = "My Team",
+            actions = {
+                IconButton(onClick = {}) {
+                    Icon(
+                        Icons.Default.Delete,
+                        contentDescription = "Reset bench",
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+            }
         )
     }
 }

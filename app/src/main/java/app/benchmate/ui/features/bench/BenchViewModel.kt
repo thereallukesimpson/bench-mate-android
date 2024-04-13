@@ -56,7 +56,7 @@ class BenchViewModel @Inject constructor(application: Application) : AndroidView
                 )
             }
             if (playersDisplay.isNotEmpty()) {
-                _team.emit(ViewState.Team(list = playersDisplay))
+                _team.emit(ViewState.Team(list = playersDisplay.sortedByDescending { it.status }))
             } else {
                 _team.emit(ViewState.Empty())
             }

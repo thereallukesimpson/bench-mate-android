@@ -10,7 +10,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,9 +29,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import app.benchmate.R
 import app.benchmate.ui.components.BenchMateBottomAppBar
 import app.benchmate.ui.components.BenchMateFab
 import app.benchmate.ui.components.BenchMateScaffold
@@ -47,6 +52,7 @@ fun BenchScreen(
     val team by viewModel.team.collectAsState()
     val openPlayerInputDialog = remember { mutableStateOf(false) }
     val openClearBenchDialog = remember { mutableStateOf(false) }
+    val showDropDownMenu = remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     BenchMateScaffold(
@@ -54,12 +60,23 @@ fun BenchScreen(
             BmTopAppBar(
                 title = "My Team",
                 actions = {
-                    IconButton(onClick = { openClearBenchDialog.value = !openClearBenchDialog.value }) {
+                    IconButton(onClick = {
+                        showDropDownMenu.value = !showDropDownMenu.value
+                    }) {
                         Icon(
-                            Icons.Default.Delete,
-                            contentDescription = "Reset bench",
+                            Icons.Default.MoreVert,
+                            contentDescription = stringResource(id = R.string.bench_options_menu_description),
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
+                    }
+
+                    DropdownMenu(expanded = showDropDownMenu.value, onDismissRequest = {}) {
+                        DropdownMenuItem(
+                            text = { Text(text = stringResource(id = R.string.clear_bench)) },
+                            onClick = {
+                                openClearBenchDialog.value = !openClearBenchDialog.value
+                                showDropDownMenu.value = !showDropDownMenu.value
+                            })
                     }
                 }
             )
@@ -146,7 +163,7 @@ fun BenchScreen(
                 icon = Icons.Filled.Person
             )
         }
-        
+
         if (openClearBenchDialog.value) {
             BmAlertDialog(
                 icon = Icons.Default.Delete,

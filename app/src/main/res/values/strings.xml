@@ -3,4 +3,6 @@
 
     // Bench screen
     <string name="empty_state_message">Tap + below to add a player. You can then assign them to the bench.</string>
+    <string name="bench_options_menu_description">Bench options menu</string>
+    <string name="clear_bench">Clear bench count</string>
 </resources>

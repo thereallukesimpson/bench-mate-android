@@ -70,7 +70,7 @@ fun BenchScreen(
                         )
                     }
 
-                    DropdownMenu(expanded = showDropDownMenu.value, onDismissRequest = {}) {
+                    DropdownMenu(expanded = showDropDownMenu.value, onDismissRequest = { showDropDownMenu.value = false }) {
                         DropdownMenuItem(
                             text = { Text(text = stringResource(id = R.string.clear_bench)) },
                             onClick = {

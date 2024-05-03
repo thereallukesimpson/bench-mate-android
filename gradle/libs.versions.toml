@@ -9,7 +9,7 @@ lifecycle-runtime-ktx = "2.7.0"
 activity-compose = "1.9.0"
 hilt-android = "2.51"
 hilt-navigation-compose = "1.2.0"
-compose-bom = "2024.04.01"
+compose-bom = "2024.05.00"
 benchmate-repositories = "0.0.8"
 timber = "5.0.1"
 

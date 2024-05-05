@@ -22,9 +22,10 @@ import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
-class BenchViewModel @Inject constructor(application: Application) : AndroidViewModel(application = application) {
-
-    private val playerRepository = RealPlayerRepository(DatabaseDriverFactory(application.applicationContext))
+class BenchViewModel @Inject constructor(
+    application: Application,
+    private val playerUseCase: PlayerUseCase
+) : AndroidViewModel(application = application) {
 
     private val _team = MutableStateFlow<ViewState>(ViewState.Empty())
 
@@ -34,7 +35,7 @@ class BenchViewModel @Inject constructor(application: Application) : AndroidView
 
     private fun getPlayers() {
         viewModelScope.launch {
-            val playersDisplay = playerRepository.getAllPlayers().map {
+            val playersDisplay = playerUseCase.getAllPlayers().map {
                 val onBenchCount =  it.onBenchCount ?: 0
                 PlayerDisplay(
                     id = it.playerId,
@@ -70,7 +71,7 @@ class BenchViewModel @Inject constructor(application: Application) : AndroidView
             val id = UUID.randomUUID().toString()
             Timber.d("UUID = $id")
 
-            playerRepository.addPlayer(
+            playerUseCase.addPlayer(
                 playerId = id,
                 firstName = name,
                 number = number,
@@ -84,14 +85,14 @@ class BenchViewModel @Inject constructor(application: Application) : AndroidView
 
     fun clearBench() {
         viewModelScope.launch {
-            playerRepository.clearBenchCountAndPlayerStatus()
+            playerUseCase.clearBenchCountAndPlayerStatus()
             getPlayers()
         }
     }
 
     private fun onBenchClicked(playerId: String, status: PlayerStatus, onBenchCount: Int) {
         viewModelScope.launch {
-            playerRepository.updatePlayerStatus(playerId, status.toDomain(), onBenchCount = onBenchCount)
+            playerUseCase.updatePlayerStatus(playerId, status.toDomain(), onBenchCount = onBenchCount)
             getPlayers()
         }
     }

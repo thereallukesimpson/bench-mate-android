@@ -1,17 +1,14 @@
 package app.benchmate.ui.features.bench
 
-import android.app.Application
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.benchmate.R
-import app.benchmate.repositories.db.DatabaseDriverFactory
-import app.benchmate.repositories.player.RealPlayerRepository
 import app.benchmate.ui.theme.Green600
 import app.benchmate.ui.theme.PurpleGrey80
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,9 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BenchViewModel @Inject constructor(
-    application: Application,
     private val playerUseCase: PlayerUseCase
-) : AndroidViewModel(application = application) {
+) : ViewModel() {
 
     private val _team = MutableStateFlow<ViewState>(ViewState.Empty())
 

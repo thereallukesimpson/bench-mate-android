@@ -11,8 +11,11 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
 class BenchViewModelTest {
@@ -54,6 +57,45 @@ class BenchViewModelTest {
             assertThat(teamState.list.size).isEqualTo(2)
 
             expectNoEvents()
+
+            verify(mockPlayerUseCase, times(1)).getAllPlayers()
+        }
+    }
+
+    @Test
+    fun givenTeamState_whenClearBench_thenPlayersEmitted() = runTest {
+        viewModel = BenchViewModel(
+            playerUseCase = mockPlayerUseCase
+        )
+        viewModel.team.test {
+            skipItems(2) // Skip empty and initial team state
+            verify(mockPlayerUseCase, times(1)).getAllPlayers()
+            viewModel.clearBench()
+
+            awaitItem() // Event triggered after clearBench but just reflect mocked values
+
+            verify(mockPlayerUseCase, times(1)).clearBenchCountAndPlayerStatus()
+            verify(mockPlayerUseCase, times(2)).getAllPlayers()
+        }
+    }
+
+    @Test
+    fun givenAddPlayer_whenPlayerAdded_thenPlayerEmitted() = runTest {
+        viewModel = BenchViewModel(
+            playerUseCase = mockPlayerUseCase
+        )
+
+        viewModel.team.test {
+            skipItems(2) // Skip empty and initial team state
+            viewModel.addPlayerToTeam(
+                name = "Test",
+                number = 1
+            )
+
+            awaitItem() // Event triggered after addPlayerToTeam but just reflects mocked values
+
+            verify(mockPlayerUseCase, times(2)).getAllPlayers()
+            verify(mockPlayerUseCase, times(1)).addPlayer(any(), any(), any(), any(), any())
         }
     }
 }

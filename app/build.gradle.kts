@@ -82,4 +82,7 @@ dependencies {
     implementation(libs.benchmate.repositories)
     testImplementation(libs.mockitoCore)
     testImplementation(libs.mockitoKotlin)
+    testImplementation(libs.turbine)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.truth)
 }

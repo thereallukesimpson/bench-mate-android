@@ -12,11 +12,11 @@ hilt-navigation-compose = "1.2.0"
 compose-bom = "2024.05.00"
 benchmate-repositories = "0.0.8"
 timber = "5.0.1"
-mockitoCore = "5.5.0"
-mockitoKotlin = "5.1.0"
+mockitoCore = "5.15.2"
+mockitoKotlin = "5.4.0"
 turbine = "1.2.0"
 coroutinesTest = "1.9.0"
-truth = "1.1.5"
+truth = "1.4.4"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }

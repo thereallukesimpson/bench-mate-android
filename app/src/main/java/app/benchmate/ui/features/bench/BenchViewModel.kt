@@ -1,17 +1,15 @@
 package app.benchmate.ui.features.bench
 
-import android.app.Application
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.benchmate.R
-import app.benchmate.repositories.db.DatabaseDriverFactory
-import app.benchmate.repositories.player.RealPlayerRepository
+import app.benchmate.common.usecase.PlayerUseCase
 import app.benchmate.ui.theme.Green600
 import app.benchmate.ui.theme.PurpleGrey80
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,9 +20,9 @@ import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
-class BenchViewModel @Inject constructor(application: Application) : AndroidViewModel(application = application) {
-
-    private val playerRepository = RealPlayerRepository(DatabaseDriverFactory(application.applicationContext))
+class BenchViewModel @Inject constructor(
+    private val playerUseCase: PlayerUseCase
+) : ViewModel() {
 
     private val _team = MutableStateFlow<ViewState>(ViewState.Empty())
 
@@ -34,21 +32,21 @@ class BenchViewModel @Inject constructor(application: Application) : AndroidView
 
     private fun getPlayers() {
         viewModelScope.launch {
-            val playersDisplay = playerRepository.getAllPlayers().map {
+            val playersDisplay = playerUseCase.getAllPlayers().map {
                 val onBenchCount =  it.onBenchCount ?: 0
                 PlayerDisplay(
                     id = it.playerId,
                     firstName = it.firstName,
                     number = it.number,
-                    status = it.playerStatus?.toDisplay() ?: PlayerStatus.NONE,
+                    status = it.playerStatus?.toDisplay() ?: PlayerStatusDisplay.NONE,
                     onBench = onBenchCount,
                     onBenchClicked = {
                         onBenchClicked(
                             playerId = it.playerId,
-                            status = if (it.playerStatus?.toDisplay() == PlayerStatus.BENCH) {
-                                PlayerStatus.NONE
-                            } else PlayerStatus.BENCH,
-                            onBenchCount = if (it.playerStatus?.toDisplay() == PlayerStatus.NONE) {
+                            status = if (it.playerStatus?.toDisplay() == PlayerStatusDisplay.BENCH) {
+                                PlayerStatusDisplay.NONE
+                            } else PlayerStatusDisplay.BENCH,
+                            onBenchCount = if (it.playerStatus?.toDisplay() == PlayerStatusDisplay.NONE) {
                                 onBenchCount + 1
                             } else { onBenchCount }
                         )
@@ -70,11 +68,11 @@ class BenchViewModel @Inject constructor(application: Application) : AndroidView
             val id = UUID.randomUUID().toString()
             Timber.d("UUID = $id")
 
-            playerRepository.addPlayer(
+            playerUseCase.addPlayer(
                 playerId = id,
                 firstName = name,
                 number = number,
-                playerStatus = PlayerStatus.NONE.toDomain(),
+                playerStatus = PlayerStatusDisplay.NONE.toDomain(),
                 onBenchCount = 0
             )
 
@@ -84,14 +82,14 @@ class BenchViewModel @Inject constructor(application: Application) : AndroidView
 
     fun clearBench() {
         viewModelScope.launch {
-            playerRepository.clearBenchCountAndPlayerStatus()
+            playerUseCase.clearBenchCountAndPlayerStatus()
             getPlayers()
         }
     }
 
-    private fun onBenchClicked(playerId: String, status: PlayerStatus, onBenchCount: Int) {
+    private fun onBenchClicked(playerId: String, status: PlayerStatusDisplay, onBenchCount: Int) {
         viewModelScope.launch {
-            playerRepository.updatePlayerStatus(playerId, status.toDomain(), onBenchCount = onBenchCount)
+            playerUseCase.updatePlayerStatus(playerId, status.toDomain(), onBenchCount = onBenchCount)
             getPlayers()
         }
     }
@@ -107,7 +105,7 @@ class BenchViewModel @Inject constructor(application: Application) : AndroidView
         ) : ViewState()
     }
 
-    enum class PlayerStatus(val status: String) {
+    enum class PlayerStatusDisplay(val status: String) {
         NONE("Bench"),
         BENCH("On bench"),
         PLAYING("Playing");
@@ -129,17 +127,17 @@ class BenchViewModel @Inject constructor(application: Application) : AndroidView
         }
     }
 
-    private fun app.benchmate.repositories.models.PlayerStatus.toDisplay(): PlayerStatus {
+    private fun app.benchmate.repositories.models.PlayerStatus.toDisplay(): PlayerStatusDisplay {
         return when (this) {
-            app.benchmate.repositories.models.PlayerStatus.NONE -> PlayerStatus.NONE
-            app.benchmate.repositories.models.PlayerStatus.BENCH -> PlayerStatus.BENCH
+            app.benchmate.repositories.models.PlayerStatus.NONE -> PlayerStatusDisplay.NONE
+            app.benchmate.repositories.models.PlayerStatus.BENCH -> PlayerStatusDisplay.BENCH
         }
     }
 
-    private fun PlayerStatus.toDomain(): app.benchmate.repositories.models.PlayerStatus {
+    private fun PlayerStatusDisplay.toDomain(): app.benchmate.repositories.models.PlayerStatus {
         return when (this) {
-            PlayerStatus.NONE -> app.benchmate.repositories.models.PlayerStatus.NONE
-            PlayerStatus.BENCH -> app.benchmate.repositories.models.PlayerStatus.BENCH
+            PlayerStatusDisplay.NONE -> app.benchmate.repositories.models.PlayerStatus.NONE
+            PlayerStatusDisplay.BENCH -> app.benchmate.repositories.models.PlayerStatus.BENCH
             else -> app.benchmate.repositories.models.PlayerStatus.NONE
         }
     }
@@ -148,7 +146,7 @@ class BenchViewModel @Inject constructor(application: Application) : AndroidView
         val id: String,
         val firstName: String,
         val number: Int,
-        val status: PlayerStatus = PlayerStatus.NONE,
+        val status: PlayerStatusDisplay = PlayerStatusDisplay.NONE,
         val onBench: Int = 0,
         val onBenchClicked: () -> Unit
     )

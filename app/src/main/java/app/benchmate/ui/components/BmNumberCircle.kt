@@ -19,7 +19,7 @@ import app.benchmate.ui.features.bench.BenchViewModel
 fun BmNumberCircle(
     modifier: Modifier = Modifier,
     number: Int,
-    status: BenchViewModel.PlayerStatus = BenchViewModel.PlayerStatus.NONE
+    status: BenchViewModel.PlayerStatusDisplay = BenchViewModel.PlayerStatusDisplay.NONE
 ) {
 
     Box(

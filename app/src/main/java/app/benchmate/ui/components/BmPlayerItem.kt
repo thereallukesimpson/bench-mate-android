@@ -71,7 +71,7 @@ fun BmPlayerItem(
 @Composable
 fun PlayerStatus(
     modifier: Modifier = Modifier,
-    status: BenchViewModel.PlayerStatus = BenchViewModel.PlayerStatus.NONE,
+    status: BenchViewModel.PlayerStatusDisplay = BenchViewModel.PlayerStatusDisplay.NONE,
     onClick: () -> Unit
 ) {
     Row(
@@ -103,7 +103,7 @@ fun BmPlayerItemPreview() {
                 id = "1",
                 firstName = "Luke",
                 number = 13,
-                status = BenchViewModel.PlayerStatus.NONE,
+                status = BenchViewModel.PlayerStatusDisplay.NONE,
                 onBenchClicked = {}
             )
         )
@@ -119,7 +119,7 @@ fun BmPlayerItemBenchPreview() {
                 id = "2",
                 firstName = "Luke",
                 number = 14,
-                status = BenchViewModel.PlayerStatus.BENCH,
+                status = BenchViewModel.PlayerStatusDisplay.BENCH,
                 onBenchClicked = {}
             )
         )

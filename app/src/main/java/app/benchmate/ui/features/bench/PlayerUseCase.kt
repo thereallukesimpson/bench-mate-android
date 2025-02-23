@@ -1,19 +1,13 @@
 package app.benchmate.ui.features.bench
 
-import android.app.Application
-import app.benchmate.repositories.db.DatabaseDriverFactory
 import app.benchmate.repositories.models.Player
 import app.benchmate.repositories.models.PlayerStatus
-import app.benchmate.repositories.player.RealPlayerRepository
+import app.benchmate.repositories.player.PlayerRepository
 import javax.inject.Inject
 
-/**
- * At this stage this use case simply wraps the repository interface to enable view model unit tests.
- */
-class PlayerUseCase @Inject constructor(application: Application) {
-
-    // TODO Inject this from multiplatform repository
-    private val playerRepository = RealPlayerRepository(DatabaseDriverFactory(application.applicationContext))
+class PlayerUseCase @Inject constructor(
+    private val playerRepository: PlayerRepository
+) {
 
     suspend fun getAllPlayers(): List<Player> {
         return playerRepository.getAllPlayers()

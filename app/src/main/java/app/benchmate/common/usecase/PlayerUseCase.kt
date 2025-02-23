@@ -1,4 +1,4 @@
-package app.benchmate.ui.features.bench
+package app.benchmate.common.usecase
 
 import app.benchmate.repositories.models.Player
 import app.benchmate.repositories.models.PlayerStatus

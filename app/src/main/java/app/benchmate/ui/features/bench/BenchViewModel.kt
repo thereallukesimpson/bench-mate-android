@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.benchmate.R
+import app.benchmate.common.usecase.PlayerUseCase
 import app.benchmate.ui.theme.Green600
 import app.benchmate.ui.theme.PurpleGrey80
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -37,15 +38,15 @@ class BenchViewModel @Inject constructor(
                     id = it.playerId,
                     firstName = it.firstName,
                     number = it.number,
-                    status = it.playerStatus?.toDisplay() ?: PlayerStatus.NONE,
+                    status = it.playerStatus?.toDisplay() ?: PlayerStatusDisplay.NONE,
                     onBench = onBenchCount,
                     onBenchClicked = {
                         onBenchClicked(
                             playerId = it.playerId,
-                            status = if (it.playerStatus?.toDisplay() == PlayerStatus.BENCH) {
-                                PlayerStatus.NONE
-                            } else PlayerStatus.BENCH,
-                            onBenchCount = if (it.playerStatus?.toDisplay() == PlayerStatus.NONE) {
+                            status = if (it.playerStatus?.toDisplay() == PlayerStatusDisplay.BENCH) {
+                                PlayerStatusDisplay.NONE
+                            } else PlayerStatusDisplay.BENCH,
+                            onBenchCount = if (it.playerStatus?.toDisplay() == PlayerStatusDisplay.NONE) {
                                 onBenchCount + 1
                             } else { onBenchCount }
                         )
@@ -71,7 +72,7 @@ class BenchViewModel @Inject constructor(
                 playerId = id,
                 firstName = name,
                 number = number,
-                playerStatus = PlayerStatus.NONE.toDomain(),
+                playerStatus = PlayerStatusDisplay.NONE.toDomain(),
                 onBenchCount = 0
             )
 
@@ -86,7 +87,7 @@ class BenchViewModel @Inject constructor(
         }
     }
 
-    private fun onBenchClicked(playerId: String, status: PlayerStatus, onBenchCount: Int) {
+    private fun onBenchClicked(playerId: String, status: PlayerStatusDisplay, onBenchCount: Int) {
         viewModelScope.launch {
             playerUseCase.updatePlayerStatus(playerId, status.toDomain(), onBenchCount = onBenchCount)
             getPlayers()
@@ -104,7 +105,7 @@ class BenchViewModel @Inject constructor(
         ) : ViewState()
     }
 
-    enum class PlayerStatus(val status: String) {
+    enum class PlayerStatusDisplay(val status: String) {
         NONE("Bench"),
         BENCH("On bench"),
         PLAYING("Playing");
@@ -126,17 +127,17 @@ class BenchViewModel @Inject constructor(
         }
     }
 
-    private fun app.benchmate.repositories.models.PlayerStatus.toDisplay(): PlayerStatus {
+    private fun app.benchmate.repositories.models.PlayerStatus.toDisplay(): PlayerStatusDisplay {
         return when (this) {
-            app.benchmate.repositories.models.PlayerStatus.NONE -> PlayerStatus.NONE
-            app.benchmate.repositories.models.PlayerStatus.BENCH -> PlayerStatus.BENCH
+            app.benchmate.repositories.models.PlayerStatus.NONE -> PlayerStatusDisplay.NONE
+            app.benchmate.repositories.models.PlayerStatus.BENCH -> PlayerStatusDisplay.BENCH
         }
     }
 
-    private fun PlayerStatus.toDomain(): app.benchmate.repositories.models.PlayerStatus {
+    private fun PlayerStatusDisplay.toDomain(): app.benchmate.repositories.models.PlayerStatus {
         return when (this) {
-            PlayerStatus.NONE -> app.benchmate.repositories.models.PlayerStatus.NONE
-            PlayerStatus.BENCH -> app.benchmate.repositories.models.PlayerStatus.BENCH
+            PlayerStatusDisplay.NONE -> app.benchmate.repositories.models.PlayerStatus.NONE
+            PlayerStatusDisplay.BENCH -> app.benchmate.repositories.models.PlayerStatus.BENCH
             else -> app.benchmate.repositories.models.PlayerStatus.NONE
         }
     }
@@ -145,7 +146,7 @@ class BenchViewModel @Inject constructor(
         val id: String,
         val firstName: String,
         val number: Int,
-        val status: PlayerStatus = PlayerStatus.NONE,
+        val status: PlayerStatusDisplay = PlayerStatusDisplay.NONE,
         val onBench: Int = 0,
         val onBenchClicked: () -> Unit
     )

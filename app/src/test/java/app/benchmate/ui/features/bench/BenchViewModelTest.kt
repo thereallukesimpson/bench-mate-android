@@ -1,5 +1,6 @@
 package app.benchmate.ui.features.bench
 
+import app.benchmate.common.usecase.PlayerUseCase
 import org.junit.Before
 import org.mockito.kotlin.mock
 
@@ -14,5 +15,7 @@ class BenchViewModelTest {
             playerUseCase = mockPlayerUseCase
         )
     }
+
+
 
 }

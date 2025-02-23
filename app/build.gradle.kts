@@ -4,16 +4,18 @@ plugins {
     alias(libs.plugins.kotlinAndroid)
     kotlin("kapt")
     alias(libs.plugins.daggerHiltAndroid)
+    alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "app.benchmate"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "app.benchmate"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 4
         versionName = "0.1.3"
 
@@ -47,9 +49,6 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.8"
-    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -70,7 +69,7 @@ dependencies {
     implementation(libs.material3)
     implementation(libs.timber)
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

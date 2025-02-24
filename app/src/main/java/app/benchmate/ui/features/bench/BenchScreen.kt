@@ -1,5 +1,6 @@
 package app.benchmate.ui.features.bench
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -140,8 +141,13 @@ fun BenchScreen(
                         contentPadding = PaddingValues(vertical = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
-                        items(theTeam.list.size) {
+                        items(count = theTeam.list.size, key = { item -> theTeam.list[item].id }) {
                             BmPlayerItem(
+                                modifier = Modifier.animateItem(
+                                    fadeInSpec = null,
+                                    fadeOutSpec = null,
+                                    placementSpec = tween(durationMillis = 500)
+                                ),
                                 player = theTeam.list[it]
                             )
                         }

@@ -15,8 +15,6 @@ import app.benchmate.ui.theme.PurpleGrey80
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
-import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -63,13 +61,7 @@ class BenchViewModel @Inject constructor(
 
     fun addPlayerToTeam(name: String, number: Int) {
         viewModelScope.launch {
-
-            // TODO move UUID to repository
-            val id = UUID.randomUUID().toString()
-            Timber.d("UUID = $id")
-
             playerUseCase.addPlayer(
-                playerId = id,
                 firstName = name,
                 number = number,
                 playerStatus = PlayerStatusDisplay.NONE.toDomain(),

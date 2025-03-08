@@ -14,14 +14,12 @@ class PlayerUseCase @Inject constructor(
     }
 
     suspend fun addPlayer(
-        playerId: String,
         firstName: String,
         number: Int,
         playerStatus: PlayerStatus,
         onBenchCount: Int
     ) {
         playerRepository.addPlayer(
-            playerId = playerId,
             firstName = firstName,
             number = number,
             playerStatus = playerStatus,

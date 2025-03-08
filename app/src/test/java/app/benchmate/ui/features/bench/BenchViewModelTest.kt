@@ -95,7 +95,7 @@ class BenchViewModelTest {
             awaitItem() // Event triggered after addPlayerToTeam but just reflects mocked values
 
             verify(mockPlayerUseCase, times(2)).getAllPlayers()
-            verify(mockPlayerUseCase, times(1)).addPlayer(any(), any(), any(), any(), any())
+            verify(mockPlayerUseCase, times(1)).addPlayer(any(), any(), any(), any())
         }
     }
 }

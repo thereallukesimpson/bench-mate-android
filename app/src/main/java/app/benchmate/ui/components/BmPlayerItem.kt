@@ -67,29 +67,27 @@ fun BmPlayerItem(
                 )
 
                 val activeBenchStartMs = player.activeBenchStartMs
-                if (player.completedBenchMs > 0L || activeBenchStartMs != null) {
-                    if (activeBenchStartMs != null) {
-                        var currentMs by remember { mutableLongStateOf(System.currentTimeMillis()) }
-                        LaunchedEffect(activeBenchStartMs) {
-                            while (true) {
-                                delay(1000)
-                                currentMs = System.currentTimeMillis()
-                            }
+                if (activeBenchStartMs != null) {
+                    var currentMs by remember { mutableLongStateOf(System.currentTimeMillis()) }
+                    LaunchedEffect(activeBenchStartMs) {
+                        while (true) {
+                            delay(1000)
+                            currentMs = System.currentTimeMillis()
                         }
-                        val totalMs = player.completedBenchMs + (currentMs - activeBenchStartMs)
-                        Text(
-                            modifier = Modifier.padding(top = 2.dp),
-                            text = "Bench time: ${totalMs.formatBenchTime()}",
-                            style = Typography.bodySmall,
-                            color = Green600
-                        )
-                    } else {
-                        Text(
-                            modifier = Modifier.padding(top = 2.dp),
-                            text = "Bench time: ${player.completedBenchMs.formatBenchTime()}",
-                            style = Typography.bodySmall
-                        )
                     }
+                    val totalMs = player.completedBenchMs + (currentMs - activeBenchStartMs)
+                    Text(
+                        modifier = Modifier.padding(top = 2.dp),
+                        text = "Bench time: ${BenchViewModel.formatBenchTime(totalMs)}",
+                        style = Typography.bodySmall,
+                        color = Green600
+                    )
+                } else if (player.formattedBenchTime != null) {
+                    Text(
+                        modifier = Modifier.padding(top = 2.dp),
+                        text = "Bench time: ${player.formattedBenchTime}",
+                        style = Typography.bodySmall
+                    )
                 }
             }
 
@@ -157,11 +155,4 @@ fun BmPlayerItemBenchPreview() {
             )
         )
     }
-}
-
-private fun Long.formatBenchTime(): String {
-    val totalSeconds = this / 1000
-    val minutes = totalSeconds / 60
-    val seconds = totalSeconds % 60
-    return "${minutes}m ${seconds.toString().padStart(2, '0')}s"
 }

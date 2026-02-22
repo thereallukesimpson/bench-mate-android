@@ -45,6 +45,9 @@ class BenchViewModel @Inject constructor(
                     status = it.playerStatus?.toDisplay() ?: PlayerStatusDisplay.NONE,
                     onBench = onBenchCount,
                     completedBenchMs = completedBenchMs,
+                    formattedBenchTime = if (activeBenchStartMs == null && completedBenchMs > 0L) {
+                        formatBenchTime(completedBenchMs)
+                    } else null,
                     activeBenchStartMs = activeBenchStartMs,
                     onBenchClicked = {
                         onBenchClicked(
@@ -155,7 +158,17 @@ class BenchViewModel @Inject constructor(
         val status: PlayerStatusDisplay = PlayerStatusDisplay.NONE,
         val onBench: Int = 0,
         val completedBenchMs: Long = 0L,
+        val formattedBenchTime: String? = null,
         val activeBenchStartMs: Long? = null,
         val onBenchClicked: () -> Unit
     )
+
+    companion object {
+        fun formatBenchTime(ms: Long): String {
+            val totalSeconds = ms / 1000
+            val minutes = totalSeconds / 60
+            val seconds = totalSeconds % 60
+            return "${minutes}m ${seconds.toString().padStart(2, '0')}s"
+        }
+    }
 }

@@ -1,23 +1,24 @@
 [versions]
-agp = "8.8.1"
-kotlin = "2.0.20"
-core-ktx = "1.15.0"
+agp = "8.9.1"
+kotlin = "2.2.0"
+core-ktx = "1.17.0"
 junit = "4.13.2"
-androidx-test-ext-junit = "1.2.1"
-espresso-core = "3.6.1"
-lifecycle-runtime-ktx = "2.8.7"
-activity-compose = "1.10.0"
-hilt-android = "2.52"
-hilt-navigation-compose = "1.2.0"
-compose-bom = "2025.02.00"
+androidx-test-ext-junit = "1.3.0"
+espresso-core = "3.7.0"
+lifecycle-runtime-ktx = "2.10.0"
+activity-compose = "1.12.4"
+hilt-android = "2.57.1"
+hilt-navigation-compose = "1.3.0"
+compose-bom = "2026.02.00"
 benchmate-repositories = "0.1.0"
 timber = "5.0.1"
-mockitoCore = "5.15.2"
-mockitoKotlin = "5.4.0"
-turbine = "1.2.0"
-coroutinesTest = "1.9.0"
-truth = "1.4.4"
-ksp = "2.0.20-1.0.24"
+mockitoCore = "5.21.0"
+mockitoKotlin = "6.2.3"
+turbine = "1.2.1"
+coroutinesTest = "1.10.2"
+truth = "1.4.5"
+ksp = "2.3.2"
+material-icons-extended = "1.7.0-alpha06"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -37,6 +38,7 @@ ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview
 ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 material3 = { group = "androidx.compose.material3", name = "material3" }
+material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "material-icons-extended" }
 benchmate-repositories = { group = "app.benchmate", name = "benchmaterepositories", version.ref = "benchmate-repositories" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 mockitoCore = { group = "org.mockito", name = "mockito-core", version.ref = "mockitoCore" }

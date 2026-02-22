@@ -80,6 +80,51 @@ class BenchViewModelTest {
     }
 
     @Test
+    fun givenPlayerWithNoBenchItems_whenGetPlayers_thenFormattedBenchTimeIsNull() = runTest {
+        viewModel = BenchViewModel(
+            playerUseCase = mockPlayerUseCase
+        )
+
+        viewModel.team.test {
+            skipItems(1) // Skip empty state
+            val teamState = awaitItem() as BenchViewModel.ViewState.Team
+            assertThat(teamState.list.all { it.formattedBenchTime == null }).isTrue()
+        }
+    }
+
+    @Test
+    fun givenPlayerWithCompletedBenchTime_whenGetPlayers_thenFormattedBenchTimeIsNotNull() = runTest {
+        whenever(mockPlayerUseCase.getAllPlayers()).thenReturn(
+            BenchTestData.getPlayerWithCompletedBench()
+        )
+        viewModel = BenchViewModel(
+            playerUseCase = mockPlayerUseCase
+        )
+
+        viewModel.team.test {
+            skipItems(1) // Skip empty state
+            val teamState = awaitItem() as BenchViewModel.ViewState.Team
+            assertThat(teamState.list[0].formattedBenchTime).isNotNull()
+        }
+    }
+
+    @Test
+    fun givenPlayerWithActiveBenchSession_whenGetPlayers_thenFormattedBenchTimeIsNull() = runTest {
+        whenever(mockPlayerUseCase.getAllPlayers()).thenReturn(
+            BenchTestData.getPlayerWithActiveBench()
+        )
+        viewModel = BenchViewModel(
+            playerUseCase = mockPlayerUseCase
+        )
+
+        viewModel.team.test {
+            skipItems(1) // Skip empty state
+            val teamState = awaitItem() as BenchViewModel.ViewState.Team
+            assertThat(teamState.list[0].formattedBenchTime).isNull()
+        }
+    }
+
+    @Test
     fun givenZeroMs_whenFormatBenchTime_thenReturnsZeroMinutesZeroSeconds() {
         assertThat(BenchViewModel.formatBenchTime(0L)).isEqualTo("0m 00s")
     }

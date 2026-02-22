@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.benchmate.ui.features.bench.BenchViewModel
 import app.benchmate.ui.theme.BenchMateTheme
+import app.benchmate.ui.theme.Green600
 import app.benchmate.ui.theme.Typography
 import kotlinx.coroutines.delay
 
@@ -66,24 +67,29 @@ fun BmPlayerItem(
                 )
 
                 val activeBenchStartMs = player.activeBenchStartMs
-                if (activeBenchStartMs != null) {
-                    var currentMs by remember { mutableLongStateOf(System.currentTimeMillis()) }
-                    LaunchedEffect(activeBenchStartMs) {
-                        while (true) {
-                            delay(1000)
-                            currentMs = System.currentTimeMillis()
+                if (player.completedBenchMs > 0L || activeBenchStartMs != null) {
+                    if (activeBenchStartMs != null) {
+                        var currentMs by remember { mutableLongStateOf(System.currentTimeMillis()) }
+                        LaunchedEffect(activeBenchStartMs) {
+                            while (true) {
+                                delay(1000)
+                                currentMs = System.currentTimeMillis()
+                            }
                         }
+                        val totalMs = player.completedBenchMs + (currentMs - activeBenchStartMs)
+                        Text(
+                            modifier = Modifier.padding(top = 2.dp),
+                            text = "Bench time: ${totalMs.formatBenchTime()}",
+                            style = Typography.bodySmall,
+                            color = Green600
+                        )
+                    } else {
+                        Text(
+                            modifier = Modifier.padding(top = 2.dp),
+                            text = "Bench time: ${player.completedBenchMs.formatBenchTime()}",
+                            style = Typography.bodySmall
+                        )
                     }
-                    val totalMs = player.completedBenchMs + (currentMs - activeBenchStartMs)
-                    Text(
-                        text = "Bench time: ${totalMs.formatBenchTime()}",
-                        style = Typography.bodySmall
-                    )
-                } else {
-                    Text(
-                        text = "Bench time: ${player.completedBenchMs.formatBenchTime()}",
-                        style = Typography.bodySmall
-                    )
                 }
             }
 

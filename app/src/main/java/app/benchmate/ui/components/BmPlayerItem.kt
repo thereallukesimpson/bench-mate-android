@@ -79,14 +79,14 @@ fun BmPlayerItem(
                         val totalMs = player.completedBenchMs + (currentMs - activeBenchStartMs)
                         Text(
                             modifier = Modifier.padding(top = 2.dp),
-                            text = "Bench time: ${totalMs.formatBenchTime()}",
+                            text = "Bench time: ${BenchViewModel.formatBenchTime(totalMs)}",
                             style = Typography.bodySmall,
                             color = Green600
                         )
                     } else {
                         Text(
                             modifier = Modifier.padding(top = 2.dp),
-                            text = "Bench time: ${player.completedBenchMs.formatBenchTime()}",
+                            text = "Bench time: ${BenchViewModel.formatBenchTime(player.completedBenchMs)}",
                             style = Typography.bodySmall
                         )
                     }
@@ -157,11 +157,4 @@ fun BmPlayerItemBenchPreview() {
             )
         )
     }
-}
-
-private fun Long.formatBenchTime(): String {
-    val totalSeconds = this / 1000
-    val minutes = totalSeconds / 60
-    val seconds = totalSeconds % 60
-    return "${minutes}m ${seconds.toString().padStart(2, '0')}s"
 }

@@ -158,4 +158,13 @@ class BenchViewModel @Inject constructor(
         val activeBenchStartMs: Long? = null,
         val onBenchClicked: () -> Unit
     )
+
+    companion object {
+        fun formatBenchTime(ms: Long): String {
+            val totalSeconds = ms / 1000
+            val minutes = totalSeconds / 60
+            val seconds = totalSeconds % 60
+            return "${minutes}m ${seconds.toString().padStart(2, '0')}s"
+        }
+    }
 }

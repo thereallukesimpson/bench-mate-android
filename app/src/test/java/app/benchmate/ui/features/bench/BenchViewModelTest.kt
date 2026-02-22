@@ -80,6 +80,31 @@ class BenchViewModelTest {
     }
 
     @Test
+    fun givenZeroMs_whenFormatBenchTime_thenReturnsZeroMinutesZeroSeconds() {
+        assertThat(BenchViewModel.formatBenchTime(0L)).isEqualTo("0m 00s")
+    }
+
+    @Test
+    fun givenSubMinuteMs_whenFormatBenchTime_thenReturnsZeroMinutesWithSeconds() {
+        assertThat(BenchViewModel.formatBenchTime(30_000L)).isEqualTo("0m 30s")
+    }
+
+    @Test
+    fun givenExactMinuteMs_whenFormatBenchTime_thenReturnsOneMinuteZeroSeconds() {
+        assertThat(BenchViewModel.formatBenchTime(60_000L)).isEqualTo("1m 00s")
+    }
+
+    @Test
+    fun givenMinutesAndSecondsMs_whenFormatBenchTime_thenReturnsFormattedTime() {
+        assertThat(BenchViewModel.formatBenchTime(90_000L)).isEqualTo("1m 30s")
+    }
+
+    @Test
+    fun givenSingleDigitSeconds_whenFormatBenchTime_thenSecondsPaddedToTwoDigits() {
+        assertThat(BenchViewModel.formatBenchTime(65_000L)).isEqualTo("1m 05s")
+    }
+
+    @Test
     fun givenAddPlayer_whenPlayerAdded_thenPlayerEmitted() = runTest {
         viewModel = BenchViewModel(
             playerUseCase = mockPlayerUseCase

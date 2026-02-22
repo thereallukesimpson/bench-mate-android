@@ -13,6 +13,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -21,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import app.benchmate.ui.features.bench.BenchViewModel
 import app.benchmate.ui.theme.BenchMateTheme
 import app.benchmate.ui.theme.Typography
+import kotlinx.coroutines.delay
 
 @Composable
 fun BmPlayerItem(
@@ -58,6 +64,27 @@ fun BmPlayerItem(
                     text = "Bench count: ${player.onBench}",
                     style = Typography.bodySmall
                 )
+
+                val activeBenchStartMs = player.activeBenchStartMs
+                if (activeBenchStartMs != null) {
+                    var currentMs by remember { mutableLongStateOf(System.currentTimeMillis()) }
+                    LaunchedEffect(activeBenchStartMs) {
+                        while (true) {
+                            delay(1000)
+                            currentMs = System.currentTimeMillis()
+                        }
+                    }
+                    val totalMs = player.completedBenchMs + (currentMs - activeBenchStartMs)
+                    Text(
+                        text = "Bench time: ${totalMs.formatBenchTime()}",
+                        style = Typography.bodySmall
+                    )
+                } else {
+                    Text(
+                        text = "Bench time: ${player.completedBenchMs.formatBenchTime()}",
+                        style = Typography.bodySmall
+                    )
+                }
             }
 
             PlayerStatus(
@@ -124,4 +151,11 @@ fun BmPlayerItemBenchPreview() {
             )
         )
     }
+}
+
+private fun Long.formatBenchTime(): String {
+    val totalSeconds = this / 1000
+    val minutes = totalSeconds / 60
+    val seconds = totalSeconds % 60
+    return "${minutes}m ${seconds.toString().padStart(2, '0')}s"
 }

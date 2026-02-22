@@ -32,12 +32,20 @@ class BenchViewModel @Inject constructor(
         viewModelScope.launch {
             val playersDisplay = playerUseCase.getAllPlayers().map {
                 val onBenchCount =  it.onBenchCount ?: 0
+                val completedBenchMs = it.benchItems
+                    .filter { item -> item.endTime != null }
+                    .sumOf { item -> (item.startTime.elapsedNow() - item.endTime!!.elapsedNow()).inWholeMilliseconds }
+                val activeBenchStartMs = it.benchItems
+                    .firstOrNull { item -> item.endTime == null }
+                    ?.let { item -> System.currentTimeMillis() - item.startTime.elapsedNow().inWholeMilliseconds }
                 PlayerDisplay(
                     id = it.playerId,
                     firstName = it.firstName,
                     number = it.number,
                     status = it.playerStatus?.toDisplay() ?: PlayerStatusDisplay.NONE,
                     onBench = onBenchCount,
+                    completedBenchMs = completedBenchMs,
+                    activeBenchStartMs = activeBenchStartMs,
                     onBenchClicked = {
                         onBenchClicked(
                             playerId = it.playerId,
@@ -75,6 +83,7 @@ class BenchViewModel @Inject constructor(
     fun clearBench() {
         viewModelScope.launch {
             playerUseCase.clearBenchCountAndPlayerStatus()
+            playerUseCase.clearBenchItems()
             getPlayers()
         }
     }
@@ -82,6 +91,11 @@ class BenchViewModel @Inject constructor(
     private fun onBenchClicked(playerId: String, status: PlayerStatusDisplay, onBenchCount: Int) {
         viewModelScope.launch {
             playerUseCase.updatePlayerStatus(playerId, status.toDomain(), onBenchCount = onBenchCount)
+            if (status == PlayerStatusDisplay.BENCH) {
+                playerUseCase.addBenchItem(playerId)
+            } else {
+                playerUseCase.pauseBenchTime(playerId)
+            }
             getPlayers()
         }
     }
@@ -140,6 +154,8 @@ class BenchViewModel @Inject constructor(
         val number: Int,
         val status: PlayerStatusDisplay = PlayerStatusDisplay.NONE,
         val onBench: Int = 0,
+        val completedBenchMs: Long = 0L,
+        val activeBenchStartMs: Long? = null,
         val onBenchClicked: () -> Unit
     )
 }

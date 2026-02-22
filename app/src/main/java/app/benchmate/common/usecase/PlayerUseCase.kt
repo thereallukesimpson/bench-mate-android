@@ -42,4 +42,8 @@ class PlayerUseCase @Inject constructor(
     suspend fun clearBenchCountAndPlayerStatus() {
         playerRepository.clearBenchCountAndPlayerStatus()
     }
+
+    suspend fun addBenchItem(playerId: String) = playerRepository.addBenchItem(playerId)
+    suspend fun pauseBenchTime(playerId: String) = playerRepository.pauseBenchTime(playerId)
+    suspend fun clearBenchItems() = playerRepository.clearBenchItems()
 }
